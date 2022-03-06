@@ -94,3 +94,32 @@ def CoefDetermination(ys, res):
 CoefDetermination(df_ols.query('type=="train"').totalwgt_lb,
                   df_ols.query('type=="res"').totalwgt_lb)
 # %% Testing a linear model
+from dataclasses import dataclass
+@dataclass
+class SlopeTest:
+    data: pd.DataFrame
+    ages = data.iloc[:,0]
+    weights = data.iloc[:,1]
+
+    def TestStatistic(self):
+        _, slope = LeastSquares(self.ages, self.weights)
+        return slope
+    
+    def MakeModel(self):
+        self.ybar = self.weights.mean()
+        res = self.weights - self.ybar
+        return res
+    
+    def RunModel(self):
+        ages, _ = self.data
+        weights = self.ybar + np.random.permutation(self.res)
+        return ages, weights
+# %%
+live = df.dropna(subset=['agepreg', 'totalwgt_lb'])
+# %%
+ht = SlopeTest(live[['agepreg', 'totalwgt_lb']])
+ht.TestStatistic()
+ht.MakeModel()
+# %%
+
+# %%
